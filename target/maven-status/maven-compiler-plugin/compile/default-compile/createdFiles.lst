@@ -1,0 +1,5 @@
+com\medicus_connect\messaging\MessagingApplication.class
+com\medicus_connect\messaging\Helper.class
+com\medicus_connect\messaging\configuration\OpenApiConfig.class
+com\medicus_connect\messaging\controller\UtilityController.class
+com\medicus_connect\messaging\configuration\ModelMapperConfig.class
