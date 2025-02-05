@@ -1,30 +1,43 @@
 package com.medicus_connect.messaging.controller;
 
-import com.medicus_connect.messaging.model.request.MessageRequest;
-import com.medicus_connect.messaging.service.MessagingService;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.medicus_connect.messaging.service.EmailService;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
-@RequestMapping("email")
+@RequestMapping("/email")
 public class EmailController {
 
-    @Autowired
-    private MessagingService messagingService;
+    private final EmailService emailService;
 
-    @Operation(summary = "Api for sending delay and cancellation messages", description = "")
-    @GetMapping("/send-message")
-    public ResponseEntity<String> sendMessage(@RequestParam MessageRequest messageRequest) {
+    public EmailController(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
-        log.info("Calling MessagingService to send message");
-        return new ResponseEntity<>(messagingService.sendMessage(messageRequest), HttpStatus.OK);
+    @PostMapping("/sendText")
+    public String sendTextEmail(@RequestParam String to,
+                                @RequestParam String subject,
+                                @RequestParam String body) {
+        emailService.sendTextEmail(to, subject, body);
+        return "Text email sent successfully!";
+    }
+
+    @PostMapping("/sendHtml")
+    public String sendHtmlEmail(@RequestParam String to,
+                                @RequestParam String subject,
+                                @RequestParam String htmlContent) {
+        emailService.sendHtmlEmail(to, subject, htmlContent);
+        return "HTML email sent successfully!";
+    }
+
+    @PostMapping("/sendWithAttachment")
+    public String sendEmailWithAttachment(@RequestParam String to,
+                                          @RequestParam String subject,
+                                          @RequestParam String body,
+                                          @RequestParam String filePath) {
+        emailService.sendEmailWithAttachment(to, subject, body, filePath);
+        return "Email with attachment sent successfully!";
     }
 }

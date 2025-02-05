@@ -17,7 +17,21 @@ spring:
       database: medicus-connect
       uri: mongodb://localhost:27017
 
-app:
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: akhilpgvr@gmail.com
+    password: qhwl yvpb wwgo nstg  # Use App Password, not your Gmail password!
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+
   messages:
     success: "Dear {customer_name},\n\nWe are pleased to inform you that your appointment with Dr. {doctor_name} on {appointment_date} at {appointment_time} has been successfully scheduled.\n\nThank you for choosing our service.\n\nBest regards,\n Medicus Connect"
 

@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class MessageRequest {
 
-    List<String> emailIds;
+    List<String> emailIds; // mailId doctor name, patient name, appointment time
     String messageTypeCode;
 }
