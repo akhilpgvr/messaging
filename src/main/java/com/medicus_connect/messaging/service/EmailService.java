@@ -1,37 +1,76 @@
 package com.medicus_connect.messaging.service;
 
+import com.medicus_connect.messaging.configuration.ConfigurationProperties;
+import com.medicus_connect.messaging.exceptions.InvalidContentCodeException;
+import com.medicus_connect.messaging.model.common.EmailData;
+import com.medicus_connect.messaging.model.request.MessageRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.management.AttributeNotFoundException;
 import java.io.File;
 
+@Slf4j
 @Service
 public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    @Autowired
+    private ConfigurationProperties configurationProperties;
+
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    // Simple Text Email
-    public void sendTextEmail(String to, String subject, String body) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(body);
+    public void getSubjectAndBody(String[] subBody, String contentCode, EmailData metadata) {
 
-            mailSender.send(message);
-            System.out.println("Text Email sent successfully!");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            System.err.println("Failed to send email: " + e.getMessage());
+        log.info("Fetching subject and content for {}", contentCode);
+        switch(contentCode){
+
+            case "success":
+                subBody = configurationProperties.getSuccess().split("-");
+                subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", metadata.getAppointDate().toString()).replace("{appointment_time}", metadata.getAppointTime().toString());
+
+            case "cancellation":
+                subBody = configurationProperties.getCancellation().split("-");
+                subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", metadata.getAppointDate().toString()).replace("{appointment_time}", metadata.getAppointTime().toString());
+
+            case "delay":
+                subBody = configurationProperties.getDelay().split("-");
+                subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", metadata.getAppointDate().toString()).replace("{appointment_time}", metadata.getAppointTime().toString()).replace("{new_appointment_time}", metadata.getNewAppointTime().toString());
+
+            default:
+                throw new InvalidContentCodeException("Entered code "+contentCode+" is invalid");
         }
+
+    }
+    // Simple Text Email
+    public void sendTextEmail(MessageRequest request) {
+
+        request.getEmailDataList().forEach(i->{
+            try {
+                String[] subBody = new String[2];
+                getSubjectAndBody(subBody, request.getContentCode(), i);
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true);
+                helper.setTo(i.getMailId());
+                helper.setSubject(subBody[0]);
+                helper.setText(subBody[1]);
+                log.info("Sending Email to "+i.getMailId()+" for "+subBody[0]);
+                mailSender.send(message);
+                System.out.println("Text Email sent successfully!");
+            } catch (MessagingException e) {
+                log.error("Error in sending Email: {}",e.getStackTrace());
+                System.err.println("Failed to send email: " + e.getMessage());
+            }
+        });
+
     }
 
     // HTML Email

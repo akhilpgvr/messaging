@@ -33,11 +33,11 @@ spring:
 
 
   messages:
-    success: "Dear {customer_name},\n\nWe are pleased to inform you that your appointment with Dr. {doctor_name} on {appointment_date} at {appointment_time} has been successfully scheduled.\n\nThank you for choosing our service.\n\nBest regards,\n Medicus Connect"
+    success: "✅ Appointment Confirmation-Dear {customer_name},\n\nWe are pleased to inform you that your appointment with Dr. {doctor_name} on {appointment_date} at {appointment_time} has been successfully scheduled.\n\nThank you for choosing our service.\n\nBest regards,\n Medicus Connect"
 
-    cancellation: "Dear {customer_name},\n\nWe regret to inform you that your appointment with Dr. {doctor_name} on {appointment_date} at {appointment_time} has been canceled as per your request. If you would like to reschedule, please contact us at {contact_info}.\n\nWe apologize for any inconvenience caused.\n\nBest regards,\n Medicus Connect"
+    cancellation: "❌ Appointment Canceled-Dear {customer_name},\n\nWe regret to inform you that your appointment with Dr. {doctor_name} on {appointment_date} at {appointment_time} has been canceled as per your request. If you would like to reschedule, please contact us at {contact_info}.\n\nWe apologize for any inconvenience caused.\n\nBest regards,\n Medicus Connect"
 
-    delay: "Dear {customer_name},\n\nApologies for the inconvenience, but we regret to inform you that your appointment with Dr. {doctor_name} on {appointment_date} at {appointment_time} has been delayed due to unforeseen circumstances. Your new estimated appointment time is {new_appointment_time}. \n\nThank you for your patience and understanding. For any concerns, please reach out to the management.\n\nBest regards,\n Medicus Connect"
+    delay: "⏳ Appointment Delayed-Dear {customer_name},\n\nApologies for the inconvenience, but we regret to inform you that your appointment with Dr. {doctor_name} on {appointment_date} at {appointment_time} has been delayed due to unforeseen circumstances. Your new estimated appointment time is {new_appointment_time}. \n\nThank you for your patience and understanding. For any concerns, please reach out to the management.\n\nBest regards,\n Medicus Connect"
 
 
 config:

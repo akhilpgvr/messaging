@@ -1,11 +1,11 @@
 package com.medicus_connect.messaging.controller;
 
+import com.medicus_connect.messaging.model.request.MessageRequest;
 import com.medicus_connect.messaging.service.EmailService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/email")
 public class EmailController {
@@ -17,10 +17,10 @@ public class EmailController {
     }
 
     @PostMapping("/sendText")
-    public String sendTextEmail(@RequestParam String to,
-                                @RequestParam String subject,
-                                @RequestParam String body) {
-        emailService.sendTextEmail(to, subject, body);
+    public String sendTextEmail(@RequestBody MessageRequest messageRequest) {
+
+        log.info("Calling email service");
+        emailService.sendTextEmail(messageRequest);
         return "Text email sent successfully!";
     }
 
