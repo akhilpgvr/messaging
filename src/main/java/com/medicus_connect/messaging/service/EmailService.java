@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.management.AttributeNotFoundException;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 @Service
@@ -28,23 +30,34 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void getSubjectAndBody(String[] subBody, String contentCode, EmailData metadata) {
+    public String getDate(Date date) {
+
+
+
+        // Define the required format
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd");
+
+        // Format and print the extracted part
+        return formatter.format(date);
+    }
+
+    public String[] getSubjectAndBody(String[] subBody, String contentCode, EmailData metadata) {
 
         log.info("Fetching subject and content for {}", contentCode);
         switch(contentCode){
 
             case "success":
                 subBody = configurationProperties.getSuccess().split("-");
-                subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", metadata.getAppointDate().toString()).replace("{appointment_time}", metadata.getAppointTime().toString());
-
+                subBody[1] = subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", getDate(metadata.getAppointDate())).replace("{appointment_time}", metadata.getAppointTime());
+                return subBody;
             case "cancellation":
                 subBody = configurationProperties.getCancellation().split("-");
-                subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", metadata.getAppointDate().toString()).replace("{appointment_time}", metadata.getAppointTime().toString());
-
+                subBody[1] = subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", getDate(metadata.getAppointDate())).replace("{appointment_time}", metadata.getAppointTime());
+                return subBody;
             case "delay":
                 subBody = configurationProperties.getDelay().split("-");
-                subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", metadata.getAppointDate().toString()).replace("{appointment_time}", metadata.getAppointTime().toString()).replace("{new_appointment_time}", metadata.getNewAppointTime().toString());
-
+                subBody[1] = subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", getDate(metadata.getAppointDate())).replace("{appointment_time}", metadata.getAppointTime()).replace("{new_appointment_time}", metadata.getNewAppointTime());
+                return subBody;
             default:
                 throw new InvalidContentCodeException("Entered code "+contentCode+" is invalid");
         }
@@ -56,7 +69,7 @@ public class EmailService {
         request.getEmailDataList().forEach(i->{
             try {
                 String[] subBody = new String[2];
-                getSubjectAndBody(subBody, request.getContentCode(), i);
+                subBody = getSubjectAndBody(subBody, request.getContentCode(), i);
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true);
                 helper.setTo(i.getMailId());

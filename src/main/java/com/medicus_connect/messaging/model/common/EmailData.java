@@ -16,6 +16,6 @@ public class EmailData {
     private String patientName;
     private String doctorName;
     private Date appointDate;
-    private LocalTime appointTime;
-    private LocalTime newAppointTime;
+    private String appointTime;
+    private String newAppointTime;
 }
