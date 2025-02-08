@@ -12,7 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.management.AttributeNotFoundException;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
