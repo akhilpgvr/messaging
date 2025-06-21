@@ -13,4 +13,5 @@ public class ConfigurationProperties {
     private String delay;
     private String cancellation;
     private String success;
+    private String alert;
 }

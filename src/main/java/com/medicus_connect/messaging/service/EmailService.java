@@ -57,6 +57,10 @@ public class EmailService {
                 subBody = configurationProperties.getDelay().split("-");
                 subBody[1] = subBody[1].replace("{customer_name}", metadata.getPatientName()).replace("{doctor_name}", metadata.getDoctorName()).replace("{appointment_date}", getDate(metadata.getAppointDate())).replace("{appointment_time}", metadata.getAppointTime()).replace("{new_appointment_time}", metadata.getNewAppointTime());
                 return subBody;
+            case "alert":
+                subBody = configurationProperties.getAlert().split("-");
+                subBody[1] = subBody[1].replace("{location}", metadata.getLocation()).replace("{vehicle_no}", metadata.getVehicleNo());
+                return subBody;
             default:
                 throw new InvalidContentCodeException("Entered code "+contentCode+" is invalid");
         }
